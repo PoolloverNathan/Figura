@@ -39,7 +39,9 @@
   },
   "conflicts": {
     "immersive_portals": "*",
-    "canvas": "*",
+    "canvas": "*"
+  },
+  "breaks": {
     "immediatelyfast":  "*"
   },
   "custom": {
