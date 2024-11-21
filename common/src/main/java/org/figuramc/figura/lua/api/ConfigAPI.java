@@ -81,7 +81,7 @@ public class ConfigAPI {
 
     private void writeWithRetries(Path path, byte[] data, int retries) throws Exception {
         try (OutputStream fs = Files.newOutputStream(path)) {
-
+            fs.write(data);    
         } catch (Exception e) {
             if (retries > 0) {
                 Thread.sleep(5); // this feels suspicious, but it shouldn't be noticable (25ms at most, and only on save)
