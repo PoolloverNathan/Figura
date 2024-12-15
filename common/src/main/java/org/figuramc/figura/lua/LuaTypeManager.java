@@ -126,8 +126,24 @@ public class LuaTypeManager {
     public VarArgFunction getWrapper(Method method) {
         return new VarArgFunction() {
 
-            private final boolean isStatic = Modifier.isStatic(method.getModifiers());
+            private final boolean fakeStatic = method.getAnnotation(FakeStatic.class) != null;
+            private final boolean isStatic = fakeStatic || Modifier.isStatic(method.getModifiers());
+            private static final Map warcrimes = new HashMap();
             private Object caller;
+            {
+                if (fakeStatic) {
+                    caller = warcrimes.computeIfAbsent(method.getDeclaringClass(), clazz -> {
+                        try {
+                            // war crimes
+                            sun.reflect.ReflectionFactory rf = sun.reflect.ReflectionFactory.getReflectionFactory();
+                            Constructor c = rf.newConstructorForSerialization((Class) clazz);
+                            return c.newInstance();
+                        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+                            throw new RuntimeException(e);
+                       }
+                    });
+                }
+            }
 
 
             private final Class<?> clazz = method.getDeclaringClass();
